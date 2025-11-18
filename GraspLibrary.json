@@ -1,15 +1,22 @@
 {
-
-"red cylinder":{
-    "z_xoy_angle" :  30,
-    "vertical_euler" : [-180, 0, -90],
-    "grasp_tilt_angle" : 55,
-    "angle_threshold" : 10.0,
-    "T_safe_distance" : 0.003,
-    "z_safe_distance" : 10,
-    "gripper_close_pos" : 80
+    "red cylinder": {
+        "z_xoy_angle": 0,
+        "vertical_euler": [-180, 0, -90],
+        "grasp_tilt_angle": 30,
+        "angle_threshold": 10.0,
+        "T_safe_distance": 0.003,
+        "z_safe_distance": 25,
+        "gripper_close_pos": 20
+    },
+    "red stirring rod": {
+        "z_xoy_angle": 0,
+        "vertical_euler": [-180, 0, -90],
+        "grasp_tilt_angle": 30,
+        "angle_threshold": 10.0,
+        "T_safe_distance": 0.003,
+        "z_safe_distance": 45,
+        "gripper_close_pos": 20
+    }
 }
 
 
-
-}

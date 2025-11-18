@@ -27,21 +27,27 @@ class create_env:
             self.config = json.load(file)
 
         self.robot1, self.gripper = self.init_robot1()
-        self.camera1 = self.init_camera()
+        self.camera1_main = self.init_camera()
 
 
 
-    def init_camera1(self,):
-        self.camera1 = CreateRealsense(self.config['camera_id'])
-        self.camera1_rt = SE3.Rt(np.array(self.config['camera_1']['T_ee_cam']['rotation_matrix']),
-                                 self.config['camera_1']['T_ee_cam']['translation_vector'], 
-                                 check=False)
-        self.camera1_main = {
-            "cam": self.camera1,
-            "Rt": self.camera1_rt,
-            "cam_k": self.config['camera_1']['cam_k']
+    def init_camera(self):
+        camera_cfg = self.config['camera_1']
+        camera = CreateRealsense(camera_cfg['id'])
+        camera_rt = SE3.Rt(
+            np.array(camera_cfg['T_ee_cam']['rotation_matrix']),
+            camera_cfg['T_ee_cam']['translation_vector'],
+            check=False
+        )
+        camera_main = {
+            "cam": camera,
+            "Rt": camera_rt,
+            "T_ee_cam": camera_rt,
+            "cam_k": np.array(camera_cfg['cam_k'])
         }
-        return self.camera1_main
+        self.camera1 = camera
+        self.camera1_rt = camera_rt
+        return camera_main
                     
 
     def init_robot1(self):

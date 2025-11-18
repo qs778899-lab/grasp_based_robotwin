@@ -1,7 +1,3 @@
-normalflow_ws/.vscode/
-
-normalflow_ws/normalflow/demos/images/
-
 # 大型模型文件
 GroundingDino/groundingdino_swint_ogc.pth
 *.pth

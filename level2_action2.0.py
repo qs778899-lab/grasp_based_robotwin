@@ -11,21 +11,27 @@ from __future__ import annotations
 import json
 import logging
 import os
+import sys
 import time
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, Iterable, Optional, Tuple
 
 import cv2
 import numpy as np
-import nvdiffrast.torch as dr
 import rospy
 import trimesh
 from scipy.spatial.transform import Rotation as R
 from spatialmath import SE3, SO3
 
-from FoundationPose.estimater import FoundationPose
-from FoundationPose.learning.training.predict_pose_refine import PoseRefinePredictor
-from FoundationPose.learning.training.predict_score import ScorePredictor
+# Add FoundationPose to path for internal imports
+_fp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "FoundationPose")
+if _fp_dir not in sys.path:
+    sys.path.insert(0, _fp_dir)
+
+import nvdiffrast.torch as dr
+from estimater import FoundationPose
+from learning.training.predict_pose_refine import PoseRefinePredictor
+from learning.training.predict_score import ScorePredictor
 
 from Utils import (
     draw_posed_3d_box,
@@ -159,9 +165,12 @@ def detect_object_pose_using_foundation_pose(
 
     mesh = trimesh.load(mesh_path, force="mesh")
     mesh = mesh.copy()
-    mesh.vertices /= 1000.0
+    mesh.vertices = (mesh.vertices / 1000.0).astype(np.float64)
+    if mesh.vertex_normals is not None:
+        mesh.vertex_normals = mesh.vertex_normals.astype(np.float64)
     to_origin, extents = trimesh.bounds.oriented_bounds(mesh)
-    bbox = np.stack([-extents / 2, extents / 2], axis=0).reshape(2, 3)
+    to_origin = to_origin.astype(np.float64)
+    bbox = np.stack([-extents / 2, extents / 2], axis=0).reshape(2, 3).astype(np.float64)
 
     scorer = ScorePredictor()
     refiner = PoseRefinePredictor()
@@ -191,7 +200,7 @@ def detect_object_pose_using_foundation_pose(
     mask = _generate_mask(color_bgr, target, mask_mode, qwen_model_path, mask_kwargs)
     mask_binary = (mask > 0).astype(np.uint8)
 
-    cam_k = np.asarray(cam_main["cam_k"], dtype=np.float32)
+    cam_k = np.asarray(cam_main["cam_k"], dtype=np.float64)
 
     pose = estimator.register(
         K=cam_k,
@@ -533,7 +542,7 @@ def adjust_to_vertical_and_lift(
         pose_target[3],
         pose_target[4],
         pose_target[5],
-        speed=adjust_speed,
+        speed=int(round(adjust_speed)),
         acceleration=1,
     )
 

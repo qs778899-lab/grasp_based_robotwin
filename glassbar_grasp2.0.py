@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/home/erlin/anaconda3/envs/foundationpose/bin/python3
 """Glassbar grasp routine built on the refactored level2 actions."""
 
 from __future__ import annotations
@@ -253,8 +253,8 @@ def main(args: argparse.Namespace) -> None:
     success = _execute_grasp_sequence(plan, robot_main, gripper)
 
     #! 注意不能反了
-    angle_camera = CameraReader(camera_id=11, init_camera=True)
-    contact_camera = CameraReader(camera_id=10, init_camera=True)
+    angle_camera = CameraReader(camera_id=10, init_camera=True)
+    contact_camera = CameraReader(camera_id=11, init_camera=True)
     PIPELINE_STATE.update({
         "angle_camera": angle_camera,
         "contact_camera": contact_camera,

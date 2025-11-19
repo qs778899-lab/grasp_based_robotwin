@@ -37,7 +37,7 @@ from level2_action import (
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
 
-PIPELINE_STATE: dict[str, object] = {}
+PIPELINE_STATE: dict[str, object] = {} # 
 
 
 def _cleanup_resources() -> None:
